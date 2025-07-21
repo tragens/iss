@@ -8,6 +8,7 @@ use App\Models\CouncilModel;
 use App\Models\FacilityModel;
 use App\Models\RegionModel;
 use App\Models\ResultsModel;
+use App\Models\ResultitemModel;
 
 /**
  * Services Configuration file.
@@ -82,6 +83,16 @@ class Services extends BaseService
         }
 
         return new ResultsModel();
+    }
+
+
+    public static function resultitemModel(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('resultitemModel');
+        }
+
+        return new ResultitemModel();
     }
 
 

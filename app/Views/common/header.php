@@ -7,30 +7,34 @@
   <title>Entry Page</title>
   <!-- Bootstrap 5.3.7 CDN -->
   <link href="<?= base_url('assets/bootstrap-5.3.7-dist/css/bootstrap.min.css')?>" rel="stylesheet">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="<?= base_url('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="<?= base_url('assets/plugins/toastr/toastr.min.css') ?>">
   <script src="<?= base_url('assets/jquery/jquery.min.js') ?>"></script>
   <style>
     body {
       background-color: #f8f9fa;
-      margin: 20px;
+      /*margin: 20px;*/
     }
-    .table th, .table td {
+/*    .table th, .table td {
       vertical-align: middle;
-    }
-    .modal-body {
+    }*/
+/*    .modal-body {
       max-height: 400px;
       overflow-y: auto;
-    }
-    .btn-back {
+    }*/
+/*    .btn-back {
       margin-bottom: 20px;
     }
     .form-label {
       font-weight: bold;
-    }
+    }*/
     /* Customizing table */
-    .table-responsive {
-      overflow-x: auto; /* Makes the table scrollable horizontally */
+/*    .table-responsive {
+      overflow-x: auto; /* Makes the table scrollable horizontally *
     }
-
+*/
   
 .loading-overlay {
   position: absolute;

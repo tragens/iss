@@ -16,3 +16,5 @@ $routes->get('entry', 'Home::entry');
 $routes->get('report', 'Home::report');
 $routes->get('setup', 'Home::setup');
 $routes->get('questions', 'Home::fetchQuestions');
+$routes->post('entrySave', 'Home::entrySave');
+$routes->get('fetchEntry', 'Home::fetchEntry');
