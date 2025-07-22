@@ -1,6 +1,30 @@
  <?php require_once "common/header.php";?> 
 
-<div class="container-fluid px-5"> <!-- px-4 = horizontal padding only -->
+<style>
+  
+@media print {
+  .printableArea {
+    font-size: 12pt !important;
+    transform: none !important;
+    box-shadow: none !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+}
+
+/*  @media (max-width: 767.98px) {
+    .no-padding-xs {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }*/
+</style>
+
+<!-- <div class="container-fluid px-5">  -->
+<!-- px-4 = horizontal padding only -->
+<div class="container-fluid px-md-5 px-0">
+<!-- <div class="container-fluid px-5 no-padding-xs"> -->
   <!-- Full height, shadow, and inner padding -->
   <div class="shadow rounded bg-white p-4 min-vh-100">
       <!-- Back Button -->
@@ -38,7 +62,7 @@
     <br>
     <div class="printableArea">
       <!-- Responsive Table -->
-      <h3 class="text-center"><u>Supportive Supervistion Report  From "<span id="from"></span>" to "<span id="to"></span>"</u></h3> 
+      <h3 class="text-center">Supportive Supervistion Report <br><u><span id="from"></span><span id="to"></span></u></h3> 
 
       <div class="table-responsive" id="table_summary">
         <br>
@@ -50,7 +74,7 @@
       <div class="table-responsive" id="table_report">
         <br>
         <caption><h3>Detail Report</h3> </caption>
-        <table class="table table-bordered" id="facilityTable">
+        <table class="table table-bordered table-sm" id="facilityTable">
           <thead>
             <tr>
               <th>Kituo</th>
@@ -74,15 +98,15 @@
 
 $(document).ready(function () {
 
-$.fn.fetchReport = function() {
-  const input = $("#pickupRange"); // the date range input element
+$.fn.fetchReport = function () {
+  const input = $("#pickupRange");
   const picker = input.data('daterangepicker');
 
   const startDate = picker.startDate.format('YYYY-MM-DD');
   const endDate = picker.endDate.format('YYYY-MM-DD');
 
   if (!startDate || !endDate) {
-    toastFunction('warning','Please select a date range.');
+    toastFunction('warning', 'Please select a date range.');
     return;
   }
 
@@ -90,10 +114,10 @@ $.fn.fetchReport = function() {
     url: '<?= base_url('fetchReport') ?>',
     method: 'GET',
     dataType: 'json',
-    data: {startDate, endDate},
-    success: function(response) {
+    data: { startDate, endDate },
+    success: function (response) {
       $("#from").html(startDate);
-      $("#to").html(endDate);
+      $("#to").html(` - ${endDate}`);
 
       const items = response.items || [];
       const totalFacility = response.totalFacility || 0;
@@ -109,23 +133,22 @@ $.fn.fetchReport = function() {
       let topFacility = '';
       let bottomFacility = '';
 
-      // Add scorePercent to each item
       const enrichedItems = items.map(item => {
-        const scorePercent = ((item.score / item.maxScore) * 100);
+        const scorePercent = (item.maxScore > 0)
+          ? ((item.score / item.maxScore) * 100)
+          : 0;
         return {
           ...item,
-          scorePercent: scorePercent.toFixed(2) // Keep 2 decimal places
+          scorePercent: scorePercent.toFixed(2)
         };
       });
 
-      // Sort by scorePercent descending
       enrichedItems.sort((a, b) => b.scorePercent - a.scorePercent);
 
       if (enrichedItems.length > 0) {
         enrichedItems.forEach(item => {
-          const scorePercent = ((item.score / item.maxScore) * 100).toFixed(2);
+          const scorePercent = parseFloat(item.scorePercent);
 
-          // Status calculation (assume pass if > 50%)
           const status = scorePercent > 50 ? 'Passed' : 'Failed';
           if (scorePercent > 50) passedCount++;
           else failedCount++;
@@ -134,6 +157,7 @@ $.fn.fetchReport = function() {
             highestScore = scorePercent;
             topFacility = item.facility;
           }
+
           if (scorePercent < lowestScore) {
             lowestScore = scorePercent;
             bottomFacility = item.facility;
@@ -144,7 +168,7 @@ $.fn.fetchReport = function() {
               <td>${item.facility}</td>
               <td class="text-right">${item.maxScore}</td>
               <td class="text-right">${item.score}</td>
-              <td class="text-right">${scorePercent}%</td>
+              <td class="text-right">${item.scorePercent}%</td>
               <td>${status}</td>
             </tr>
           `;
@@ -155,39 +179,63 @@ $.fn.fetchReport = function() {
         tbody.append(row);
       }
 
-      // Fill summary table
-      const percentParticipated = ((participateFacilities / totalFacility) * 100).toFixed(0) + '%';
-      const percentPassed = ((passedCount / participateFacilities) * 100).toFixed(0) + '%';
-      const percentFailed = ((failedCount / participateFacilities) * 100).toFixed(0) + '%';
+      // --- Summary Section ---
+      const percentParticipated = totalFacility > 0
+        ? ((participateFacilities / totalFacility) * 100).toFixed(0) + '%'
+        : '0%';
+
+      const percentPassed = participateFacilities > 0
+        ? ((passedCount / participateFacilities) * 100).toFixed(0) + '%'
+        : '0%';
+
+      const percentFailed = participateFacilities > 0
+        ? ((failedCount / participateFacilities) * 100).toFixed(0) + '%'
+        : '0%';
+
+      const highestScoreDisplay = highestScore >= 0 ? `${highestScore}%` : 'N/A';
+      const lowestScoreDisplay = lowestScore <= 100 ? `${lowestScore}%` : 'N/A';
+      const topFacilityDisplay = topFacility || 'N/A';
+      const bottomFacilityDisplay = bottomFacility || 'N/A';
 
       const summaryRows = `
         <tr><th>Jumla Ya Vituo</th><td>${totalFacility}</td><td>100%</td></tr>
         <tr><th>Vituo Vilivyo shiriki</th><td>${participateFacilities}</td><td>${percentParticipated}</td></tr>
         <tr><th>Vituo Vilivyo Faulu 50% ></th><td>${passedCount}</td><td>${percentPassed}</td></tr>
         <tr><th>Vituo Vilivyo feli 50% <</th><td>${failedCount}</td><td>${percentFailed}</td></tr>
-        <tr><th>Ufaulu wa juu</th><td>${highestScore}%</td><td>${topFacility}</td></tr>
-        <tr><th>Ufaulu wa Chini</th><td>${lowestScore}%</td><td>${bottomFacility}</td></tr>
+        <tr><th>Ufaulu wa juu</th><td>${highestScoreDisplay}</td><td>${topFacilityDisplay}</td></tr>
+        <tr><th>Ufaulu wa Chini</th><td>${lowestScoreDisplay}</td><td>${bottomFacilityDisplay}</td></tr>
       `;
+
       $('#table_summary table').html(summaryRows);
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
       console.error("Failed to fetch report:", error);
     }
   });
-}
+};
 
 
 
 $('#printToPDF').click(function () {
     const element = document.querySelector('.printableArea');
-    
-    // Generate PDF using html2pdf
-    html2pdf(element, {
-        filename: 'ISS_Report.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    });
+  
+    const input = $("#pickupRange");
+    const picker = input.data('daterangepicker');
+
+    const startDate = picker.startDate.format('DD MMMM');  // e.g., "01 June"
+    const endDate = picker.endDate.format('DD MMMM, YYYY'); // e.g., "31 July, 2023"
+
+    const displayName = `ISS_Report ${startDate} - ${endDate}.pdf`;
+
+html2pdf(element, {
+  margin: [5, 10, 5, 10], // inches, slightly narrower margins
+  filename: displayName,
+  image: { type: 'png', quality: 1.0 },
+  html2canvas: { scale: 4, logging: true, dpi: 300, letterRendering: true },
+  jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+});
+
+
 });
 
 
