@@ -172,7 +172,59 @@ class Home extends BaseController
 
     public function report()
     {
-        return view('report');
+
+        $data['region'] = $this->regionModel->findAll();
+        $data['council'] = $this->councilModel->findAll();
+        $data['facility'] = $this->facilityModel->findAll();
+        return view('report', $data);
+    }
+
+    public function fetchReport()
+    {
+
+        // Set content type
+        $this->response->setHeader("Content-Type", "application/json");
+
+        $from = $this->request->getVar('startDate');
+        $to = $this->request->getVar('endDate');
+
+        // Fetch all active
+        $totalFacility = $this->facilityModel->countAllResults();
+        $participateFacilities = $this->resultsModel
+                            ->select('count(facility)')
+                            ->where('tb_results.date >=', $from)
+                            ->where('tb_results.date <=', $to)
+                            ->groupBy('facility')->countAllResults();
+
+
+        // Fetch all 
+        $posts = $this->resultsModel
+                        ->select('tb_facility.name as facility, tb_results.date, sum(tb_resultitem.maxScore) as maxScore, sum(tb_resultitem.results) as score')
+                        ->join('tb_facility', 'tb_facility.id = tb_results.facility')
+                        ->join('tb_resultitem', 'tb_resultitem.resultId = tb_results.id')
+                        ->groupBy('tb_results.id')
+                        ->where('tb_results.date >=', $from)
+                        ->where('tb_results.date <=', $to)
+                        ->findAll();
+        $response = '';
+        if ($posts) {
+            $response = array_map(function ($post) {
+                return [
+                    'facility' => $post['facility'],
+                    'date'     => $post['date'],
+                    'maxScore' => $post['maxScore'],
+                    'score'    => $post['score'],
+                ];
+            }, $posts);
+        }
+
+        return $this->response->setJSON([
+                            'items'=> $response,
+                            'totalFacility'=> $totalFacility,
+                            'participateFacilities' => $participateFacilities,
+                                    ]);
+
+
     }
 
     public function setup()

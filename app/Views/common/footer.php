@@ -1,6 +1,8 @@
-  
+  <script src="<?= base_url('assets/custom/js/custom-select.js') ?>"></script>
   <!-- Bootstrap 5.3.7 JS (Optional for interactivity) -->
   <script src="<?= base_url('assets/bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js')?>"></script>
+
+
 <!-- SweetAlert2 -->
 <script src="<?= base_url('assets/plugins/sweetalert2/sweetalert2.min.js') ?>"></script>
 <script>
@@ -17,8 +19,20 @@
       title: message
     })
   }
+
+
+  $(function() {
+    $('#pickupRange').daterangepicker({
+      opens: 'right',
+      locale: {
+        format: 'YYYY-MM-DD'
+      }
+    });
+  });
+
+
 </script>
-  
+
 </body>
 
 </html>

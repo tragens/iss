@@ -7,8 +7,8 @@
 
       <div>
           <a href="<?=base_url('entry') ?>" class="btn btn-primary btn-lg m-2">Entry</a>
-          <a href="<?=base_url('entry') ?>" class="btn btn-secondary btn-lg m-2">Reports</a>
-          <a href="<?=base_url('entry') ?>" class="btn btn-success btn-lg m-2">Setups</a>
+          <a href="<?=base_url('report') ?>" class="btn btn-secondary btn-lg m-2">Reports</a>
+          <a href="<?=base_url('setup') ?>" class="btn btn-success btn-lg m-2">Setups</a>
       </div>
   </div>
 </div>

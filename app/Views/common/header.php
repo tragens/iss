@@ -12,29 +12,19 @@
   <!-- Toastr -->
   <link rel="stylesheet" href="<?= base_url('assets/plugins/toastr/toastr.min.css') ?>">
   <script src="<?= base_url('assets/jquery/jquery.min.js') ?>"></script>
+  <!-- Daterange picker -->
+    <script src="<?= base_url('assets/plugins/moment/moment.min.js') ?>"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/plugins/daterangepicker/daterangepicker.css') ?>">
+    <script src="<?= base_url('assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+
+  <link rel="stylesheet" href="<?= base_url('assets/custom/css/custom-select.css') ?>">
+<script src="<?= base_url('assets/plugins/html2pdf/html2pdf.bundle.js')?>"></script>
+
   <style>
     body {
       background-color: #f8f9fa;
       /*margin: 20px;*/
     }
-/*    .table th, .table td {
-      vertical-align: middle;
-    }*/
-/*    .modal-body {
-      max-height: 400px;
-      overflow-y: auto;
-    }*/
-/*    .btn-back {
-      margin-bottom: 20px;
-    }
-    .form-label {
-      font-weight: bold;
-    }*/
-    /* Customizing table */
-/*    .table-responsive {
-      overflow-x: auto; /* Makes the table scrollable horizontally *
-    }
-*/
   
 .loading-overlay {
   position: absolute;
@@ -55,9 +45,19 @@
   .rounded-bottom-5 {
     border-bottom-left-radius: 3rem !important;
     border-bottom-right-radius: 3rem !important;
-  }
+  }  
+
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      min-height: 200px;  /* You can adjust this value */
+    }
+
 
   </style>
+
 </head>
 
 <body>
