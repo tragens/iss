@@ -1,6 +1,8 @@
  <?php require_once "common/header.php";?> 
 
-<div class="container-fluid px-5"> <!-- px-4 = horizontal padding only -->
+<!-- <div class="container-fluid px-5">  -->
+<!-- px-4 = horizontal padding only -->
+<div class="container-fluid px-md-5 px-0">
   <!-- Full height, shadow, and inner padding -->
   <div class="shadow rounded bg-white p-4 min-vh-100">
       <!-- Back Button -->
